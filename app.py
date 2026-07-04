@@ -35,7 +35,7 @@ with st.sidebar:
     st.success("Thông tin sinh viên")
 
     st.write("**Họ tên:**")
-    st.write("Châu Nguyễn Đăng Khoa")
+    st.write("Chau Nguyễn Đăng Khoa")
 
     st.write("**MSSV:**")
     st.write("00000000000")
