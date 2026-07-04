@@ -7,33 +7,44 @@ from reportlab.platypus import (
 )
 
 from reportlab.lib.styles import getSampleStyleSheet
-
+from reportlab.lib.enums import TA_CENTER
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
 # ==========================
-# Font
+# Đăng ký font Unicode
 # ==========================
 
-font_path = os.path.join("fonts", "arial.ttf")
+font_path = os.path.join("font", "DejaVuSans.ttf")
 
-if os.path.exists(font_path):
-
-    pdfmetrics.registerFont(
-        TTFont("Arial", font_path)
+if not os.path.exists(font_path):
+    raise FileNotFoundError(
+        f"Không tìm thấy font:\n{font_path}\n"
+        "Hãy đặt file DejaVuSans.ttf vào thư mục font."
     )
 
-    FONT_NAME = "Arial"
+pdfmetrics.registerFont(
+    TTFont("DejaVu", font_path)
+)
 
-else:
+FONT_NAME = "DejaVu"
 
-    FONT_NAME = "Helvetica"
+# ==========================
+# Style
+# ==========================
 
 styles = getSampleStyleSheet()
 
-styles["Title"].fontName = FONT_NAME
-styles["BodyText"].fontName = FONT_NAME
+title_style = styles["Title"]
+title_style.fontName = FONT_NAME
+title_style.fontSize = 22
+title_style.leading = 26
+title_style.alignment = TA_CENTER
 
+body_style = styles["BodyText"]
+body_style.fontName = FONT_NAME
+body_style.fontSize = 11
+body_style.leading = 18
 
 # ==========================
 # Export PDF
@@ -48,51 +59,63 @@ def export_history_to_pdf(history, filename):
     elements.append(
         Paragraph(
             "LỊCH SỬ HỘI THOẠI",
-            styles["Title"]
+            title_style
         )
     )
 
-    elements.append(
-        Spacer(1, 20)
-    )
+    elements.append(Spacer(1, 20))
 
-    for item in history:
-
-        question = item[1].replace("\n", "<br/>")
-
-        answer = item[2].replace("\n", "<br/>")
+    if len(history) == 0:
 
         elements.append(
             Paragraph(
-                f"<b>Câu hỏi:</b><br/>{question}",
-                styles["BodyText"]
+                "Chưa có dữ liệu.",
+                body_style
             )
         )
 
-        elements.append(
-            Spacer(1, 8)
-        )
+    else:
 
-        elements.append(
-            Paragraph(
-                f"<b>Trả lời:</b><br/>{answer}",
-                styles["BodyText"]
+        for index, item in enumerate(history, start=1):
+
+            question = str(item[1]).replace("\n", "<br/>")
+            answer = str(item[2]).replace("\n", "<br/>")
+            created = str(item[3])
+
+            elements.append(
+                Paragraph(
+                    f"<b>Hội thoại #{index}</b>",
+                    body_style
+                )
             )
-        )
 
-        elements.append(
-            Spacer(1, 8)
-        )
+            elements.append(Spacer(1, 6))
 
-        elements.append(
-            Paragraph(
-                f"<b>Thời gian:</b> {item[3]}",
-                styles["BodyText"]
+            elements.append(
+                Paragraph(
+                    f"<b>Câu hỏi:</b><br/>{question}",
+                    body_style
+                )
             )
-        )
 
-        elements.append(
-            Spacer(1, 25)
-        )
+            elements.append(Spacer(1, 8))
+
+            elements.append(
+                Paragraph(
+                    f"<b>Trả lời:</b><br/>{answer}",
+                    body_style
+                )
+            )
+
+            elements.append(Spacer(1, 8))
+
+            elements.append(
+                Paragraph(
+                    f"<b>Thời gian:</b> {created}",
+                    body_style
+                )
+            )
+
+            elements.append(Spacer(1, 20))
 
     doc.build(elements)
