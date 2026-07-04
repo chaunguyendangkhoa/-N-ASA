@@ -6,62 +6,57 @@ from reportlab.platypus import (
     Spacer
 )
 
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_CENTER
 
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
 # ==========================
-# Font
+# Đăng ký font
 # ==========================
 
 FONT_NAME = "Helvetica"
 
-font_path = os.path.join(
-    "font",
-    "NotoSans-Regular.ttf"
-)
+font_path = os.path.join("font", "NotoSans-Regular.ttf")
 
 if os.path.exists(font_path):
-
     try:
-
         pdfmetrics.registerFont(
-            TTFont(
-                "NotoSans",
-                font_path
-            )
+            TTFont("NotoSans", font_path)
         )
-
         FONT_NAME = "NotoSans"
-
     except Exception as e:
-
-        print("Không thể đăng ký font:", e)
-
-        FONT_NAME = "Helvetica"
-
-else:
-
-    print("Không tìm thấy font:", font_path)
+        print(e)
 
 # ==========================
 # Styles
 # ==========================
 
-styles = getSampleStyleSheet()
+title_style = ParagraphStyle(
+    "Title",
+    fontName=FONT_NAME,
+    fontSize=22,
+    alignment=TA_CENTER,
+    spaceAfter=20,
+    leading=28
+)
 
-title_style = styles["Title"]
-title_style.fontName = FONT_NAME
-title_style.fontSize = 22
-title_style.leading = 28
-title_style.alignment = TA_CENTER
+heading_style = ParagraphStyle(
+    "Heading",
+    fontName=FONT_NAME,
+    fontSize=13,
+    spaceBefore=10,
+    spaceAfter=6,
+    leading=18
+)
 
-body_style = styles["BodyText"]
-body_style.fontName = FONT_NAME
-body_style.fontSize = 11
-body_style.leading = 18
+body_style = ParagraphStyle(
+    "Body",
+    fontName=FONT_NAME,
+    fontSize=11,
+    leading=18
+)
 
 # ==========================
 # Export PDF
@@ -80,10 +75,6 @@ def export_history_to_pdf(history, filename):
         )
     )
 
-    elements.append(
-        Spacer(1, 20)
-    )
-
     if len(history) == 0:
 
         elements.append(
@@ -95,7 +86,7 @@ def export_history_to_pdf(history, filename):
 
     else:
 
-        for index, item in enumerate(history, start=1):
+        for i, item in enumerate(history, start=1):
 
             question = str(item[1]).replace("\n", "<br/>")
             answer = str(item[2]).replace("\n", "<br/>")
@@ -103,7 +94,21 @@ def export_history_to_pdf(history, filename):
 
             elements.append(
                 Paragraph(
-                    f"<b>Hội thoại #{index}</b>",
+                    f"Hội thoại {i}",
+                    heading_style
+                )
+            )
+
+            elements.append(
+                Paragraph(
+                    "Câu hỏi:",
+                    heading_style
+                )
+            )
+
+            elements.append(
+                Paragraph(
+                    question,
                     body_style
                 )
             )
@@ -114,7 +119,14 @@ def export_history_to_pdf(history, filename):
 
             elements.append(
                 Paragraph(
-                    f"<b>Câu hỏi:</b><br/>{question}",
+                    "Trả lời:",
+                    heading_style
+                )
+            )
+
+            elements.append(
+                Paragraph(
+                    answer,
                     body_style
                 )
             )
@@ -125,24 +137,13 @@ def export_history_to_pdf(history, filename):
 
             elements.append(
                 Paragraph(
-                    f"<b>Trả lời:</b><br/>{answer}",
+                    f"Thời gian: {created}",
                     body_style
                 )
             )
 
             elements.append(
-                Spacer(1, 8)
-            )
-
-            elements.append(
-                Paragraph(
-                    f"<b>Thời gian:</b> {created}",
-                    body_style
-                )
-            )
-
-            elements.append(
-                Spacer(1, 20)
+                Spacer(1, 18)
             )
 
     doc.build(elements)
