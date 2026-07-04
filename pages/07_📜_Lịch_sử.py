@@ -6,7 +6,7 @@ APP_NAME = "AI Study Assistant"
 
 VERSION = "1.0"
 
-AUTHOR = "Châu Nguyễn Đăng Khoa"
+AUTHOR = "Chau Nguyễn Đăng Khoa"
 
 # ===========================
 # Groq
