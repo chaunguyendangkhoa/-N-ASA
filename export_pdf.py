@@ -8,26 +8,39 @@ from reportlab.platypus import (
 
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.enums import TA_CENTER
+
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
 # ==========================
-# Đăng ký font Unicode
+# Font
 # ==========================
 
-font_path = os.path.join("font", "DejaVuSans.ttf")
+FONT_NAME = "Helvetica"
 
-if not os.path.exists(font_path):
-    raise FileNotFoundError(
-        f"Không tìm thấy font:\n{font_path}\n"
-        "Hãy đặt file DejaVuSans.ttf vào thư mục font."
-    )
+font_folder = "font"
 
-pdfmetrics.registerFont(
-    TTFont("DejaVu", font_path)
+font_file = os.path.join(
+    font_folder,
+    "DejaVuSans.ttf"
 )
 
-FONT_NAME = "DejaVu"
+if os.path.exists(font_file):
+
+    try:
+
+        pdfmetrics.registerFont(
+            TTFont(
+                "DejaVu",
+                font_file
+            )
+        )
+
+        FONT_NAME = "DejaVu"
+
+    except Exception:
+
+        FONT_NAME = "Helvetica"
 
 # ==========================
 # Style
@@ -37,8 +50,8 @@ styles = getSampleStyleSheet()
 
 title_style = styles["Title"]
 title_style.fontName = FONT_NAME
-title_style.fontSize = 22
-title_style.leading = 26
+title_style.fontSize = 20
+title_style.leading = 24
 title_style.alignment = TA_CENTER
 
 body_style = styles["BodyText"]
@@ -63,7 +76,9 @@ def export_history_to_pdf(history, filename):
         )
     )
 
-    elements.append(Spacer(1, 20))
+    elements.append(
+        Spacer(1, 20)
+    )
 
     if len(history) == 0:
 
@@ -89,7 +104,9 @@ def export_history_to_pdf(history, filename):
                 )
             )
 
-            elements.append(Spacer(1, 6))
+            elements.append(
+                Spacer(1, 6)
+            )
 
             elements.append(
                 Paragraph(
@@ -98,7 +115,9 @@ def export_history_to_pdf(history, filename):
                 )
             )
 
-            elements.append(Spacer(1, 8))
+            elements.append(
+                Spacer(1, 8)
+            )
 
             elements.append(
                 Paragraph(
@@ -107,7 +126,9 @@ def export_history_to_pdf(history, filename):
                 )
             )
 
-            elements.append(Spacer(1, 8))
+            elements.append(
+                Spacer(1, 8)
+            )
 
             elements.append(
                 Paragraph(
@@ -116,6 +137,8 @@ def export_history_to_pdf(history, filename):
                 )
             )
 
-            elements.append(Spacer(1, 20))
+            elements.append(
+                Spacer(1, 20)
+            )
 
     doc.build(elements)
