@@ -18,40 +18,44 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 FONT_NAME = "Helvetica"
 
-font_folder = "font"
-
-font_file = os.path.join(
-    font_folder,
-    "DejaVuSans.ttf"
+font_path = os.path.join(
+    "font",
+    "NotoSans-Regular.ttf"
 )
 
-if os.path.exists(font_file):
+if os.path.exists(font_path):
 
     try:
 
         pdfmetrics.registerFont(
             TTFont(
-                "DejaVu",
-                font_file
+                "NotoSans",
+                font_path
             )
         )
 
-        FONT_NAME = "DejaVu"
+        FONT_NAME = "NotoSans"
 
-    except Exception:
+    except Exception as e:
+
+        print("Không thể đăng ký font:", e)
 
         FONT_NAME = "Helvetica"
 
+else:
+
+    print("Không tìm thấy font:", font_path)
+
 # ==========================
-# Style
+# Styles
 # ==========================
 
 styles = getSampleStyleSheet()
 
 title_style = styles["Title"]
 title_style.fontName = FONT_NAME
-title_style.fontSize = 20
-title_style.leading = 24
+title_style.fontSize = 22
+title_style.leading = 28
 title_style.alignment = TA_CENTER
 
 body_style = styles["BodyText"]
@@ -105,7 +109,7 @@ def export_history_to_pdf(history, filename):
             )
 
             elements.append(
-                Spacer(1, 6)
+                Spacer(1, 8)
             )
 
             elements.append(
