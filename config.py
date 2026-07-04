@@ -3,7 +3,7 @@ import os
 
 APP_NAME = "AI Study Assistant"
 VERSION = "1.0"
-AUTHOR = "Châu Nguyễn Đăng Khoa"
+AUTHOR = "Chau Nguyễn Đăng Khoa"
 
 MODEL_NAME = "llama-3.3-70b-versatile"
 
