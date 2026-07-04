@@ -1,0 +1,7 @@
+streamlit
+groq
+requests
+pandas
+python-docx
+reportlab
+Pillow
